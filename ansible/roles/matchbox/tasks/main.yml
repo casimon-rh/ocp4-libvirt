@@ -1,14 +1,71 @@
 ---
 #  tasks
 
-- include_tasks: install-matchbox.yml
+- name: Unarchive a file that needs to be downloaded (added in 2.0)
+  unarchive:
+    src: "{{ matchbox_url }}"
+    dest: /tmp
+    remote_src: yes
 
-- include_tasks: populate-ocp-rhcos.yml
+- name: Copy matchbox bin to /usr/local/bin
+  copy:
+    remote_src: yes
+    src: "{{ matchbox_tmp + '/matchbox' }}"
+    dest: /usr/local/bin
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
 
-- include_tasks: populate-profiles.yml
+- name: Copy matchbox service to /etc/systemd/services
+  copy:
+    remote_src: yes
+    src: "{{ matchbox_tmp + '/contrib/systemd/matchbox-local.service' }}"
+    dest: /etc/systemd/system/matchbox.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
 
-- include_tasks: populate-groups.yml
+- name: Create matchbox group
+  group:
+    name: matchbox
+    state: present
 
-- include_tasks: populate-ocp-clients.yml
+- name: Create matchbox user
+  user:
+    name: matchbox
+    group: matchbox
+    shell: /bin/false
+    create_home: no 
 
-#- include_tasks: populate-ignition.yml
+- name: enable matchbox
+  service:
+    name: matchbox
+    enabled: yes
+
+- name: start matchbox
+  service:
+    name: matchbox
+    state: started
+
+- name: Create matchbox directory tree
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: matchbox
+    mode: '0755'
+    group: matchbox
+  loop: 
+    - "{{ matchbox_dir }}"
+    - "{{ matchbox_assets }}"
+    - "{{ matchbox_groups }}"
+    - "{{ matchbox_ignition }}"
+    - "{{ matchbox_profiles }}"
+  notify:
+    - enable matchbox
+    - start matchbox
+
+- name: Remove matchbox tarball from /tmp 
+  file:
+    path: "{{ matchbox_tmp }}"
+    state: absent
+  

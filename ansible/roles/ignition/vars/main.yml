@@ -1,7 +1,17 @@
 ---
+rhcos_mirror: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos"
+ocp_mirror: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
+
 ocp_cluster_dir: "{{ ocp_base_dir + '/' + ocp_name }}"
-matchbox_ignition: "{{ '/var/lib/matchbox/ignition' }}"
 install_config: install-config.yaml
-pull_secret: "pull_secret"
+pull_secret: pull_secret
 ssh_key: id_ocp_rsa
 ssh_key_pub: "{{ ssh_key + '.pub' }}"
+
+matchbox_dir: "/var/lib/matchbox"
+matchbox_assets: "{{ matchbox_dir + '/assets' }}"
+matchbox_groups: "{{ matchbox_dir + '/groups' }}"
+matchbox_ignition: "{{ matchbox_dir + '/ignition' }}"
+matchbox_profiles: "{{ matchbox_dir + '/profiles' }}"
+matchbox_rhcos_checksum: "{{ matchbox_assets + '/rhcos-' + rhcos_ver + '-sha256sum.txt' }}"
+matchbox_ocp_checksum: "{{ matchbox_assets + '/ocp-' + ocp_ver + '-sha256sum.txt' }}"

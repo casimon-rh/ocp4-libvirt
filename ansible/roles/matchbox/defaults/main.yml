@@ -1,9 +1,4 @@
 ---
 #  defaults
 
-rhcos_ver: 4.3.0
-rhcos_minver: "{{ rhcos_ver.split('.')[0] + '.' + rhcos_ver.split('.')[1] }}"
-ocp_ver: 4.3.0
-ocp_domain: "example.com"
-ocp_name: "ocp4"
-ocp_dir : "/opt/openshift"
+ocp_domain: ""

@@ -1,6 +1,12 @@
 ---
-ocp_num_masters: 1
-ocp_num_workers: 2
+# default vars
 net_domain: "example.com"
+ocp_num_masters: "1"
+ocp_num_workers: "2"
 ocp_name: "ocp4"
+
 ocp_base_dir : "/opt/openshift"
+
+rhcos_ver: "latest"
+ocp_ver: "4.3.0"
+rhcos_minver: "{{ ocp_ver.split('.')[0] + '.' + ocp_ver.split('.')[1] }}"

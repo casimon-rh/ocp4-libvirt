@@ -9,8 +9,8 @@ all:
       ip_cidr: "192.168.100.2/24"
       ip_gw: "192.168.100.1"
   vars:
-    rhcos_ver: 4.2.18
-    ocp_ver: 4.2.32
+    rhcos_ver: 4.3.0
+    ocp_ver: 4.3.26
     ocp_name: ocp4
     net_domain: lab.io
     ocp_domain: ocp4.lab.io
