@@ -1,0 +1,13 @@
+---
+#  tasks
+- name: Create profile files from template
+  template:
+    src: profile.json.j2
+    dest: "{{ matchbox_profiles + '/' + item + '.json' }}"
+    owner: matchbox
+    group: matchbox
+    mode: '0644'
+  loop:
+    - bootstrap
+    - master
+    - worker

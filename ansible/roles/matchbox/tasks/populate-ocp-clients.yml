@@ -1,0 +1,51 @@
+---
+#  tasks: openshift-install
+
+- name: Define url of OpenShift clients
+  set_fact:
+    clients_url: "{{ ocp_mirror + '/' + ocp_ver }}"
+
+- name: Define url of OpenShift clients checksum
+  set_fact:
+    clients_checksum: "{{ clients_url + '/sha256sum.txt' }}"
+
+- name: Download OpenShift clients checksum file
+  get_url:
+    url: "{{ clients_checksum }}"
+    dest: "{{ matchbox_ocp_checksum }}"
+    owner: matchbox
+    group: matchbox
+
+- name: List OpenShift clients from checksum file
+  command: "awk '/linux/ { print $2 }' {{ matchbox_ocp_checksum }}"
+  register: clients
+  changed_when: clients.stdout | length > 0
+
+- name: Define name of OpenShift files
+  set_fact:
+    ocp_client: "{{ clients.stdout_lines | select('search','client-linux') | list | first }}"
+    ocp_install: "{{ clients.stdout_lines | select('search','install-linux') | list | first }}"
+
+- name: Download OpenShift clients
+  get_url:
+    url: "{{ clients_url + '/' + item }}"
+    dest: "{{ matchbox_assets + '/' + item }}"
+    checksum: "{{ 'sha256:' + clients_checksum }}"
+    force: no
+    owner: matchbox
+    group: matchbox
+  loop:
+    - "{{ ocp_client }}"
+    - "{{ ocp_install }}"
+
+- name: Unarchive OpenShift binaries
+  unarchive:
+    src: "{{ matchbox_assets + '/' + item }}"
+    dest: "/usr/bin"
+    remote_src: yes
+    exclude: 
+      - README.md
+    mode: '0755'
+  loop:
+    - "{{ ocp_client }}"
+    - "{{ ocp_install }}"

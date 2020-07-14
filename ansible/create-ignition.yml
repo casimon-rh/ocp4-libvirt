@@ -1,0 +1,5 @@
+---
+- name: Create ignition configs for installation
+  hosts: helper
+  roles:
+    - ignition

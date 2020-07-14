@@ -1,0 +1,29 @@
+---
+#  defaults
+
+group_list:
+  - "@container-management"
+  - "@Xfce"
+  - "@base-x"
+
+package_list:
+  - centos-release-ansible-29
+  - kexec-tools
+  - bash-completion
+  - wget
+  - bind-utils
+  - curl
+  - lsof
+  - nmap-ncat
+  - telnet
+  - rsync
+  - unzip
+  - virt-install
+  - libvirt-client
+  - vim-enhanced
+  - git
+  - tree
+  - ansible
+  - jq
+  - python3
+  - python3-netaddr

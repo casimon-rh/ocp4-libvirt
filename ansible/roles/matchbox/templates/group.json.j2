@@ -1,0 +1,8 @@
+{
+ "id": "{{ item }}",
+ "name": "{{ item }} node",
+ "profile": "{{ item.split('-')[0] }}",
+ "selector": {
+  "mac": "{{ hostvars[item]['ip_mac'] }}"
+ }
+}

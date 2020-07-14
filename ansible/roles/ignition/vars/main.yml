@@ -1,0 +1,7 @@
+---
+ocp_cluster_dir: "{{ ocp_base_dir + '/' + ocp_name }}"
+matchbox_ignition: "{{ '/var/lib/matchbox/ignition' }}"
+install_config: install-config.yaml
+pull_secret: "pull_secret"
+ssh_key: id_ocp_rsa
+ssh_key_pub: "{{ ssh_key + '.pub' }}"

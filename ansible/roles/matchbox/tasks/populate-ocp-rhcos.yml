@@ -1,0 +1,39 @@
+---
+
+- name: Define url of RHCOS dependencies
+  set_fact:
+    rhcos_url: "{{ rhcos_mirror + '/' + rhcos_minver + '/' + rhcos_ver }}"
+
+- name: Define url of RHCOS checksum
+  set_fact:
+    rhcos_checksum: "{{ rhcos_url + '/sha256sum.txt' }}"
+
+- name: Download RHCOS sha256sum file
+  get_url:
+    url: "{{ rhcos_checksum }}"
+    dest: "{{ matchbox_rhcos_checksum }}"
+    owner: matchbox
+    group: matchbox
+
+- name: List RHCOS files from checksum file
+  command: "awk '/kernel|initramfs|metal/ { print $2 }' {{ matchbox_rhcos_checksum }}"
+  register: rhcos_files
+
+- name: Define name of each RHCOS asset
+  set_fact:
+    rhcos_kernel: "{{ rhcos_files.stdout_lines | select('search','kernel') | list | first }}"
+    rhcos_initrd: "{{ rhcos_files.stdout_lines | select('search','initramfs') | list | first }}"
+    rhcos_metal: "{{ rhcos_files.stdout_lines | select('search','metal') | list | first }}"
+
+- name: Download RHCOS assets from list of files
+  get_url:
+    url: "{{ rhcos_url + '/' + item }}"
+    dest: "{{ matchbox_assets + '/' + item }}"
+    checksum: "{{ 'sha256:' + rhcos_checksum }}"
+    force: no
+    owner: matchbox
+    group: matchbox
+  loop:
+    - "{{ rhcos_kernel }}"
+    - "{{ rhcos_initrd }}"
+    - "{{ rhcos_metal }}"

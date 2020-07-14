@@ -1,0 +1,17 @@
+---
+#  tasks
+
+- name: List all VMs
+  virt:
+    command: list_vms
+    uri: "{{ libvirt_connect }}"
+  register: all_vms
+  ignore_errors: yes
+  failed_when: libvirt_name not in all_vms.list_vms
+
+- debug:
+    msg: "VM {{ libvirt_name }} does not exist"
+  when: all_vms is failed
+
+- include_tasks: remove-vm.yml
+  when: all_vms is succeeded

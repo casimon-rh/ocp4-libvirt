@@ -1,0 +1,10 @@
+---
+
+- name: Create group files from template
+  template:
+    src: group.json.j2
+    dest: "{{ matchbox_groups + '/' + item + '.json' }}"
+    owner: matchbox
+    group: matchbox
+    mode: '0644'
+  loop: "{{ groups['nodes'] }}"

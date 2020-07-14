@@ -1,0 +1,23 @@
+---
+#  tasks
+- name: Install packages for HAproxy
+  package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ packages }}"
+
+- name: Deploy haproxy.cfg from template
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+
+- name: enable haproxy
+  service:
+    name: haproxy
+    enabled: yes
+
+- name: start haproxy
+  service:
+    name: haproxy
+    state: restarted

@@ -1,0 +1,19 @@
+{
+ "id": "{{ item }}",
+ "name": "{{ item }} profile",
+ "ignition_id": "{{ item }}.ign",
+ "boot": {
+  "kernel": "/assets/{{ rhcos_kernel }}",
+  "initrd": ["/assets/{{ rhcos_initrd }}"],
+   "args": [
+    "ip=dhcp",
+    "rd.neednet=1",
+    "console=tty0",
+    "console=ttyS0",
+    "coreos.inst=yes",
+    "coreos.inst.install_dev=vda",
+    "coreos.inst.image_url=http://matchbox.{{ ocp_domain }}:8080/assets/{{ rhcos_metal }}",
+    "coreos.inst.ignition_url=http://matchbox.{{ ocp_domain }}:8080/ignition?mac=${mac:hexhyp}"
+   ]
+ }
+}

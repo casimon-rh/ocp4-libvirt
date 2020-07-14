@@ -1,0 +1,66 @@
+---
+#  tasks: populate ignition
+
+- name: Remove existent OpenShift cluster directory {{ ocp_cluster_dir }}
+  file:
+    name: "{{ ocp_cluster_dir }}"
+    state: absent
+  become: yes
+
+- name: Create OpenShift cluster directory {{ ocp_cluster_dir }}
+  file:
+    name: "{{ ocp_cluster_dir }}"
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: '0775'
+  become: yes
+
+- name: Generate OpenSSH key pair
+  openssh_keypair:
+    path: "{{ ocp_base_dir + '/' + ssh_key }}"
+    force: True
+
+- name: Copy public OpenSSH key to role/files
+  copy:
+    remote_src: yes
+    force: yes
+    src: "{{ ocp_base_dir + ssh_key_pub }}"
+    dest: "{{ role_path + '/files' }}"
+    owner: ansible
+    group: ansible
+
+- name: Create Cluster install-config from template
+  template:
+    src: install-config.yaml.j2
+    dest: "{{ ocp_cluster_dir + '/' + install_config }}"
+    owner: ansible
+    group: ansible
+    mode: '0644'
+
+- name: Backup install-config
+  copy:
+    remote_src: yes
+    src: "{{ ocp_cluster_dir + '/' + install_config }}"
+    dest: "{{ ocp_base_dir + '/' + install_config }}"
+    owner: ansible
+    group: ansible
+
+- name: Generate Cluster ignition files
+  command: "openshift-install create ignition-configs --dir={{ ocp_cluster_dir }}"
+  register: openshift_install
+  changed_when: "'INFO Consuming' in openshift_install.stdout"
+
+- name: Copy Cluster ignition files to {{ matchbox_ignition }}
+  copy:
+    remote_src: yes
+    src: "{{ ocp_cluster_dir + '/' + item }}"
+    dest: "{{ matchbox_ignition }}"
+    owner: matchbox
+    group: matchbox
+  become: yes
+  loop: 
+    - bootstrap.ign
+    - master.ign
+    - worker.ign
+

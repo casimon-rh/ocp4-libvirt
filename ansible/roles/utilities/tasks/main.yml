@@ -1,0 +1,24 @@
+---
+#  main
+
+- name: Add EPEL repo
+  package:
+    name: epel-release
+    state: present
+
+- name: Install additional groups
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ group_list }}"
+
+- name: Install additional packages
+  package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ package_list }}"
+
+- name: Set default Python
+  command: alternatives --set python /usr/bin/python3
+  register: result
+  changed_when: "result.rc == 0"

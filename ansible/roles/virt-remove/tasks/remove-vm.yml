@@ -1,0 +1,24 @@
+---
+
+# Stop VMs if running
+- name: Destroy VM
+  command: >
+    virsh --connect {{ libvirt_connect }}
+    destroy {{ libvirt_name }}
+  register: vm_destroy
+  ignore_errors: yes
+
+- debug:
+    var: vm_destroy.stdout_lines
+  when: vm_destroy is succeeded
+
+# Undefine VM(s)
+- name: Undefine VM
+  command: >
+    virsh --connect {{ libvirt_connect }}
+    undefine --remove-all-storage {{ libvirt_name }}
+  register: vm_undefine
+
+- debug:
+    var: vm_undefine.stdout_lines
+  when: vm_undefine is succeeded

@@ -1,0 +1,14 @@
+---
+#  tasks
+
+- include_tasks: install-matchbox.yml
+
+- include_tasks: populate-ocp-rhcos.yml
+
+- include_tasks: populate-profiles.yml
+
+- include_tasks: populate-groups.yml
+
+- include_tasks: populate-ocp-clients.yml
+
+#- include_tasks: populate-ignition.yml

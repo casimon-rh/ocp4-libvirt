@@ -1,0 +1,78 @@
+{# jinja2 template #}
+{# define variables for later use #}
+{% set ip = ip_cidr | ipaddr('address') %}
+{% set cidr = ip_cidr | ipaddr('prefix') %}
+{% set count_usable = 100 %}
+{% set ip_domain = ocp_name + '.' + ocp_domain %}
+domain={{ ip_domain }},{{ ip_cidr | ipaddr }}
+local=/{{ ip_domain }}/
+
+# Gateway
+dhcp-option=option:router,{{ ip_gw  }}
+
+# DNS options
+dhcp-option=option:dns-server,{{ ip }}
+{# next_nth_usable returns the next usable ip address after the indicated number #}
+{% set ip_range_ini = ip_cidr | ipaddr('network/prefix') | next_nth_usable(count_usable)  %}
+{% set ip_range_end = ip_cidr | ipaddr('network/prefix') | next_nth_usable(count_usable + 100) %}
+dhcp-range={{ ip_range_ini }},{{ ip_range_end }},12h
+dhcp-option=option:ntp-server,{{ ip_gw }}
+
+#  Set the IP from DHCP pool to host's MAC
+#  Set the A records for IP
+#  Set PTR record as RHCOS gets its hostname from it
+
+#  bootstrap
+{% set ip_usable = ip_range_ini %}
+dhcp-host={{ hostvars['bootstrap']['ip_mac'] | hwaddr }},{{ ip_usable }}
+address=/bootstrap.{{ ip_domain }}/{{ ip_usable }}
+ptr-record={{ ip_usable | ipaddr('revdns') }},bootstrap.{{ ip_domain }}
+
+{# NOTE: loops do not modify set variables outside the loop #}
+{# therefore it is necesary to use preset loop variables like loop.index #}
+
+#  control plane
+{# loop over the members of group masters from inventory #}
+{# use iteration variables loop.index and loop.index0 to obtain next usable IP #}
+{% for master in groups['masters'] | sort %}
+{% set loop_ip = ip_usable ~ '/' ~ cidr %}
+{% set loop_ip = loop_ip | ipv4 | next_nth_usable(loop.index) %}
+dhcp-host={{ hostvars[master]['ip_mac'] | hwaddr }},{{ loop_ip }}
+address=/{{ master }}.{{ ip_domain }}/{{ loop_ip }}
+ptr-record={{ loop_ip | ipaddr('revdns') }},{{ master }}.{{ ip_domain }}
+address=/etcd-{{ loop.index0 }}.{{ ip_domain }}/{{ loop_ip }}
+srv-host=_etcd-server-ssl._tcp.{{ ip_domain }},etcd-{{ loop.index0 }}.{{ ip_domain }},2380,0,10
+{% endfor %}
+
+#  workers
+{# loop over the members of group workers from inventory #}
+{# use iteration variables loop.index and loop.index0 to obtain next usable IP #}
+{% set count_usable = groups['masters'] | count %}
+{% for worker in groups['workers'] | sort %}
+{% set loop_ip = ip_usable ~ '/' ~ cidr %}
+{% set loop_ip = loop_ip | ipv4 | next_nth_usable(count_usable + loop.index) %}
+dhcp-host={{ hostvars[worker]['ip_mac'] | hwaddr }},{{ loop_ip }}
+address=/{{ worker }}.{{ ip_domain }}/{{ loop_ip }}
+ptr-record={{ loop_ip | ipaddr('revdns') }},{{ worker }}.{{ ip_domain }}
+{% endfor %}
+
+
+#  A records for API and APPs
+address=/api.{{ ip_domain }}/{{ ip_cidr | ipaddr('address') }}
+address=/api-int.{{ ip_domain }}/{{ ip_cidr | ipaddr('address') }}
+address=/apps.{{ ip_domain }}/{{ ip_cidr | ipaddr('address') }}
+
+#  iPXE server for RHCOS
+address=/matchbox.{{ ip_domain }}/{{ ip_cidr | ipaddr('address') }}
+
+# TFTP and iPXE
+enable-tftp
+tftp-root=/usr/share/ipxe
+
+# iPXE
+#  set tag "iPXE" if request comes from gPXE/iPXE (code 175)
+dhcp-match=set:iPXE,175
+#  if request comes from regular PXE, send them undionly with iPXE firmware (via TFTP)
+dhcp-boot=tag:!iPXE,undionly.kpxe
+#  if request comes from iPXE, direct it to boot from boot.ipxe
+dhcp-boot=tag:iPXE,http://matchbox.{{ ip_domain }}:8080/boot.ipxe

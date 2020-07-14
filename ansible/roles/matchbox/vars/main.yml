@@ -1,0 +1,17 @@
+---
+#  vars
+matchbox_ver: 'v0.8.0'
+matchbox_tarball: "{{ 'matchbox-' + matchbox_ver + '-linux-amd64.tar.gz' }}"
+matchbox_url: "{{ 'https://github.com/poseidon/matchbox/releases/download/' + matchbox_ver + '/' + matchbox_tarball }}"
+matchbox_tmp: "{{ '/tmp/matchbox-' + matchbox_ver + '-linux-amd64' }}"
+matchbox_dir: "/var/lib/matchbox"
+matchbox_assets: "{{ matchbox_dir + '/assets' }}"
+matchbox_groups: "{{ matchbox_dir + '/groups' }}"
+matchbox_ignition: "{{ matchbox_dir + '/ignition' }}"
+matchbox_profiles: "{{ matchbox_dir + '/profiles' }}"
+matchbox_rhcos_checksum: "{{ matchbox_assets + '/rhcos-' + rhcos_ver + '-sha256sum.txt' }}"
+matchbox_ocp_checksum: "{{ matchbox_assets + '/ocp-' + ocp_ver + '-sha256sum.txt' }}"
+
+rhcos_mirror: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos"
+ocp_mirror: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
+

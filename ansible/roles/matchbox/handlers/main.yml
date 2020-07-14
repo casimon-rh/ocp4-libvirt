@@ -1,0 +1,10 @@
+---
+- name: enable matchbox
+  service:
+    name: matchbox
+    enabled: yes
+
+- name: start matchbox
+  service:
+    name: matchbox
+    state: restarted

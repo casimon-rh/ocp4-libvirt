@@ -1,0 +1,19 @@
+---
+#  tasks
+
+# Listing VMs
+- name: Check if VM is already created
+  virt:
+    command: list_vms
+    uri: "{{ libvirt_connect }}"
+  register: vms
+  ignore_errors: yes
+  failed_when: libvirt_name in vms.list_vms
+
+- debug:
+    msg: "VM {{ libvirt_name }} already exists"
+  when: vms is failed
+
+- include_tasks: create-vm.yml
+  when: vms is succeeded
+

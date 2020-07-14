@@ -1,0 +1,7 @@
+---
+#  handlers
+
+- name: remove kickstart
+  file:
+    path: "{{ libvirt_ksfile }}"
+    state: absent

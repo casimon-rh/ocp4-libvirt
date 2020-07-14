@@ -1,0 +1,146 @@
+###############################################################
+#
+# Kickstart Script to provision a bastion VM
+# with services like dnsmasq, matchbox, nginx, haproxy
+#
+###############################################################
+#version=RHEL8
+
+###############################################################
+# Installation Source
+###############################################################
+text
+
+###############################################################
+# Partitioning
+###############################################################
+%include /tmp/partitioning
+
+###############################################################
+# Password for root
+###############################################################
+# Jinja2 template
+rootpw --iscrypted {{ ks_pw }}
+
+###############################################################
+# Create users
+###############################################################
+# Jinja2 template
+user --name=ansible --uid=1000 --gid=1000 --gecos="ansible" --shell=/bin/bash --iscrypted --password="{{ ks_pw }}"
+
+###############################################################
+# Network Config
+###############################################################
+# Jinja2 template
+{% if ip_cidr is defined %}
+network --device=eth0 --bootproto=static --onboot=yes --activate --ip={{ ip_cidr | ipaddr('address') }} --netmask={{ ip_cidr | ipaddr('netmask') }} --gateway={{ ip_gw | ipaddr }} --nameserver={{ ip_dns|join(',') }}
+{% else %}
+network --device=eth0 --bootproto=dhcp --onboot=yes --activate
+{% endif %}
+network  --hostname={{ inventory_hostname }}
+
+###############################################################
+# Environment
+###############################################################
+lang en_US.UTF-8
+keyboard --vckeymap=us --xlayouts=us
+timezone America/Mazatlan --isUtc
+
+###############################################################
+# Do not configure the X Window System
+###############################################################
+skipx
+
+###############################################################
+# Misc
+###############################################################
+bootloader --append="net.ifnames=0"
+auth --passalgo=sha512 --useshadow
+selinux --disabled
+firewall --disabled
+firstboot --disable
+reboot --eject
+
+###############################################################
+# Software
+###############################################################
+%packages
+@^minimal-environment
+python3
+-biosdevname
+#@container-management
+#kexec-tools
+#bash-completion
+#wget
+#bind-utils
+#curl
+#lsof
+#nmap-ncat
+#telnet
+#rsync
+#unzip
+#dnsmasq
+#virt-install
+#libvirt-client
+#git
+#tree
+# this is on updates repo
+#selinux-policy-doc
+%end
+
+########################################################
+# turn on required services
+########################################################
+services --enabled=sshd
+
+###############################################################
+# Pre Script - the following script runs before the chroot
+# so %include can be useful to add specific commands to the installation
+###############################################################
+%pre
+disk=/dev/$(awk '$4 ~ /da$/ && NR=1 { print $4 }' /proc/partitions)
+
+cat <<EOF > /tmp/partitioning
+zerombr
+clearpart --all --initlabel --drives=$disk
+ignoredisk --only-use=$disk
+autopart --type=lvm
+#part /boot --ondisk=$disk --asprimary --fstype=ext2  --size=1024
+#part pv.1 --ondisk=$disk --fstype=lvmpv --size=2048 --grow
+#volgroup rhel pv.1
+#logvol / --name=root  --vgname=rhel --fstype=xfs --size=5120 --grow
+#logvol swap --name=swap --vgname=rhel --fstype=swap --size=2048
+EOF
+
+%end
+
+###############################################################
+# Post Script - the following script runs on the newly
+# installed machine, immediately after installation
+###############################################################
+%post --log=/root/ks-post.log
+
+########################################################
+# add sudo rules
+########################################################
+cat <<EOF > /etc/sudoers.d/01_ansible
+ansible  ALL = (root) NOPASSWD: ALL
+EOF
+
+########################################################
+# add oalias pub key to root
+########################################################
+sudo -u ansible bash -c "mkdir -p ~/.ssh"
+sudo -u ansible bash -c "chmod 700 ~/.ssh"
+sudo -u ansible bash -c "echo {{ ks_auth_key }} > ~/.ssh/authorized_keys"
+sudo -u ansible bash -c "chmod 600 ~/.ssh/authorized_keys"
+
+########################################################
+# run additional commands
+########################################################
+#alternatives --set python /usr/bin/python3
+#yum install -y epel-release
+#yum install -y tinyproxy
+#yum update -y
+
+%end

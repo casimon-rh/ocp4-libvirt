@@ -1,0 +1,16 @@
+{% set range_start = ip_cidr | ipaddr('network/prefix') | next_nth_usable(10)  %}
+{% set range_end = ip_cidr | ipaddr('network/prefix') | next_nth_usable(20) %}
+<network connections='1'>
+  <name>{{ libvirt_net }}</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <ip address='{{ ip_gw | ipaddr('address') }}' netmask='{{ ip_cidr | ipaddr('netmask') }}'>
+    <dhcp>
+      <range start='{{ range_start }}' end='{{ range_end }}'/>
+    </dhcp>
+  </ip>
+</network>

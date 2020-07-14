@@ -1,0 +1,7 @@
+---
+#  vars
+packages:
+  - dnsmasq
+  - ipxe-bootimgs
+
+networkmanager_config: '/etc/NetworkManager/NetworkManager.conf'

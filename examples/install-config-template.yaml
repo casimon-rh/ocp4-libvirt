@@ -1,0 +1,30 @@
+apiVersion: v1
+baseDomain: DOMAIN
+#proxy:
+#  httpProxy: http://internet.ford.com:83
+#  httpsProxy: http://internet.ford.com:83
+#  noProxy: "localhost,.local,.oc.io,oc.io,127.0.0.0/16,10.128.0.0/14,172.30.0.0/16"
+compute:
+- hyperthreading: Enabled
+  name: worker
+  platform: {}
+  replicas: 0
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  platform: {}
+  replicas: 1
+metadata:
+  creationTimestamp: null
+  name: CLUSTER_NAME
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  none: {}
+pullSecret: '''
+sshKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDupMWNRjrRgZ1nLb0Wrj0S5PeNWkBUbqdgZGbidb39Xdqwnq1rkycSoToUxIIR+3M4VO+x7ENFT8QW6ottAgg5MZQJEb0w9sPyDnztJwa39BqjtyND5ZYpsa6a+no2rST47LwZudtvWrSFHeC3v4kcJZ+aoVZBdpmJtvCCwlwGuw/T965zI61iFfzEG+JPWF111WMSVmPsqSYBTd9Kwb5uyj2W2Ag+d5IghPirzgrnUOeCQ8pslCfdw50X5oHTuHfzy9FOz0Tv3ty0u4vmdVyvIomB4k9W/iYSW3zk8sU2mK9uMZWzNzMyg6oXdH99m4W98+4aFmSOx7VkzAVdt2OX oaliasbo@oaliasbo.remote.csb'

@@ -1,0 +1,21 @@
+---
+# Define a new virtual network
+- name: Define libvirt network {{ libvirt_net }}
+  virt_net:
+    uri: "{{ libvirt_connect }}"
+    command: define
+    name: "{{ libvirt_net }}"
+    xml: '{{ lookup("template", "network.xml.j2") }}'
+
+# Start a network
+- name: Start libvirt network
+  virt_net:
+    uri: "{{ libvirt_connect }}"
+    command: create
+    name: "{{ libvirt_net }}"
+
+# Ensure that a given network will be started at boot
+- virt_net:
+    uri: "{{ libvirt_connect }}"
+    autostart: yes
+    name: "{{ libvirt_net }}"

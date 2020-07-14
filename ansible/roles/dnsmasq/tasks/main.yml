@@ -1,0 +1,56 @@
+---
+#  tasks
+- name: Install dnsmasq and ipxe bootimgs
+  package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ packages }}"
+
+- name: Deploy dnsmasq main config
+  copy:
+    src: dnsmasq.conf
+    dest: /etc/dnsmasq.conf
+    mode: 0644
+
+- name: Deploy dnsmasq OpenShift config
+  template:
+    src: ocp-main.conf.j2
+    dest: /etc/dnsmasq.d/ocp-main.conf
+    mode: 0644
+
+- name: Deploy dnsmasq OpenShift configs
+  template:
+    src: "{{ item }}"
+    dest: "/etc/dnsmasq.d/{{ item }}"
+    mode: 0644
+  loop:
+    - ocp-bootstrap.conf
+    - ocp-masters.conf
+    - ocp-workers.conf
+
+- name: Disable dns in NetworkManager
+  lineinfile:
+    path: "{{ networkmanager_config }}"
+    insertafter: "^\\[main\\]"
+    line: "dns=none"
+    state: present
+
+- name: Set resolution to itself in resolv.conf
+  shell: echo -e "search {{ ocp_domain }}\nnameserver 127.0.0.1" > /etc/resolv.conf
+  register: echo_result
+  changed_when: "echo_result.rc == 0"
+
+- name: Restart NetworkManager
+  service:
+    name: NetworkManager
+    state: restarted
+
+- name: Enable dnsmasq
+  service:
+    name: dnsmasq
+    enabled: yes
+
+- name: Start dnsmasq
+  service:
+    name: dnsmasq
+    state: restarted
