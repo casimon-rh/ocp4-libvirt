@@ -27,8 +27,8 @@
   copy:
     remote_src: yes
     force: yes
-    src: "{{ ocp_base_dir + ssh_key_pub }}"
-    dest: "{{ role_path + '/files' }}"
+    src: "{{ ocp_base_dir + '/' + ssh_key_pub }}"
+    dest: "{{role_path}}/files"
     owner: ansible
     group: ansible
 
