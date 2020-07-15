@@ -9,9 +9,3 @@ matchbox_assets: "{{ matchbox_dir + '/assets' }}"
 matchbox_groups: "{{ matchbox_dir + '/groups' }}"
 matchbox_ignition: "{{ matchbox_dir + '/ignition' }}"
 matchbox_profiles: "{{ matchbox_dir + '/profiles' }}"
-matchbox_rhcos_checksum: "{{ matchbox_assets + '/rhcos-' + rhcos_ver + '-sha256sum.txt' }}"
-matchbox_ocp_checksum: "{{ matchbox_assets + '/ocp-' + ocp_ver + '-sha256sum.txt' }}"
-
-rhcos_mirror: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos"
-ocp_mirror: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
-

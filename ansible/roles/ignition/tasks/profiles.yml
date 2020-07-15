@@ -7,4 +7,7 @@
     owner: matchbox
     group: matchbox
     mode: '0644'
-  loop: "{{ groups['nodes'] }}"
+  loop:
+    - bootstrap
+    - master
+    - worker

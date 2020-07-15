@@ -5,7 +5,8 @@
   file:
     name: "{{ ocp_cluster_dir }}"
     state: absent
-  become: yes
+    owner: ansible
+    group: ansible
 
 - name: Create OpenShift cluster directory {{ ocp_cluster_dir }}
   file:
@@ -14,12 +15,13 @@
     owner: ansible
     group: ansible
     mode: '0775'
-  become: yes
 
 - name: Generate OpenSSH key pair
   openssh_keypair:
     path: "{{ ocp_base_dir + '/' + ssh_key }}"
     force: True
+    owner: ansible
+    group: ansible
 
 - name: Copy public OpenSSH key to role/files
   copy:
@@ -50,6 +52,7 @@
   command: "openshift-install create ignition-configs --dir={{ ocp_cluster_dir }}"
   register: openshift_install
   changed_when: "'INFO Consuming' in openshift_install.stdout"
+  become_user: ansible
 
 - name: Copy Cluster ignition files to {{ matchbox_ignition }}
   copy:
@@ -58,7 +61,6 @@
     dest: "{{ matchbox_ignition }}"
     owner: matchbox
     group: matchbox
-  become: yes
   loop: 
     - bootstrap.ign
     - master.ign
