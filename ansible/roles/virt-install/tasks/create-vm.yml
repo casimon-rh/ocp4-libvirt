@@ -21,7 +21,7 @@
       {{ ' --network ' + libvirt_bridge | ternary('bridge=' + libvirt_bridge, 'network=' + libvirt_net, omit) + ip_mac | ternary(',mac=' + ip_mac,'') }}
       {{ ' --os-variant ' + libvirt_os_variant }}
       {{ ' --boot ' + libvirt_boot }}
-      {{ ' --graphics ' + libvirt_graphics | ternary('vnc,listen=0.0.0.0','') }}
+      {{ ' --graphics ' + libvirt_graphics | ternary('vnc,listen=0.0.0.0','none') }}
       {{ ' --noautoconsole --wait=-1' }}
     virt_source: >
       {{ libvirt_location | ternary(' --location=' + libvirt_location,' --pxe')  }}
