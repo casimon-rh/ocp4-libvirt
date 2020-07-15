@@ -18,8 +18,8 @@
       {{ ' --vcpus ' + libvirt_vcpus | string }}
       {{ ' --memory ' + libvirt_memory | string }}
       {{ ' --disk pool=' +  libvirt_disk_pool + ',size=' + libvirt_disk_size | string }}
-      {{ ' --network ' + }}
-      {{ (libvirt_bridge != '') | ternary('bridge=' + libvirt_bridge, 'network=' + libvirt_net, omit) + ',mac=' + ip_mac }}
+      {{ ' --network ' }}
+      {{ (libvirt_bridge != '') | ternary('bridge=' + libvirt_bridge, 'network=' + libvirt_net) + ',mac=' + ip_mac }}
       {{ ' --os-variant ' + libvirt_os_variant }}
       {{ ' --boot ' + libvirt_boot }}
       {{ ' --graphics ' + (libvirt_graphics == 'vnc') | ternary('vnc,listen=0.0.0.0','none') }}
