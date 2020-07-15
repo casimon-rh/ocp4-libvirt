@@ -23,6 +23,10 @@
     owner: ansible
     group: ansible
 
+- name: Obtain contents of the pub key
+  command: "cat {{ "ssh_key }}.pub"
+  register: ssh_key_pub
+
 - name: Create Cluster install-config from template
   template:
     src: install-config.yaml.j2

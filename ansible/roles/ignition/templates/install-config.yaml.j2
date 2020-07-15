@@ -20,4 +20,4 @@ networking:
 platform:
   none: {}
 pullSecret: '{{ lookup('file',pull_secret) }}'
-sshKey: '{{ lookup('file',ssh_key_pub) }}'
+sshKey: '{{ ssh_key_pub.stdout }}'
