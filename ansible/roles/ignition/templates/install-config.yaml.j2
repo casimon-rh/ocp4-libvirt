@@ -21,6 +21,6 @@ platform:
   none: {}
 {% if (ocp_ver.split('.')[1] | int) > 2 %}
 fips: false
-{% endif %}}
+{% endif %}
 pullSecret: '{{ lookup('file',pull_secret) }}'
 sshKey: '{{ ssh_key_pub.stdout }}'
