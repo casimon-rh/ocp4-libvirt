@@ -24,7 +24,7 @@
     group: ansible
 
 - name: Obtain contents of the pub key
-  command: "cat {{ "ssh_key }}.pub"
+  command: "cat {{ ssh_key }}.pub"
   register: ssh_key_pub
 
 - name: Create Cluster install-config from template
