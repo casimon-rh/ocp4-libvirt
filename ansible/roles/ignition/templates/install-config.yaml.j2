@@ -19,5 +19,6 @@ networking:
   - 172.30.0.0/16
 platform:
   none: {}
+fips: false
 pullSecret: '{{ lookup('file',pull_secret) }}'
 sshKey: '{{ ssh_key_pub.stdout }}'
