@@ -5,7 +5,7 @@ ocp_mirror: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
 ocp_cluster_dir: "{{ ocp_base_dir + '/' + ocp_name }}"
 install_config: install-config.yaml
 pull_secret: pull_secret
-ssh_key: id_ocp_rsa
+ssh_key: "{{ocp_base_dir}}/id_ocp_rsa"
 ssh_key_pub: "{{ ssh_key + '.pub' }}"
 
 matchbox_dir: "/var/lib/matchbox"

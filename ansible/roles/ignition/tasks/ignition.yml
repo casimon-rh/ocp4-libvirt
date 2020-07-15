@@ -18,17 +18,8 @@
 
 - name: Generate OpenSSH key pair
   openssh_keypair:
-    path: "{{ ocp_base_dir + '/' + ssh_key }}"
+    path: "{{ ssh_key }}"
     force: True
-    owner: ansible
-    group: ansible
-
-- name: Copy public OpenSSH key to role/files
-  copy:
-    remote_src: yes
-    force: yes
-    src: "{{ ocp_base_dir + '/' + ssh_key_pub }}"
-    dest: "{{role_path}}/files"
     owner: ansible
     group: ansible
 
