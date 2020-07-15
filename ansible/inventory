@@ -9,14 +9,13 @@ all:
       ip_cidr: "192.168.100.2/24"
       ip_gw: "192.168.100.1"
   vars:
-    rhcos_ver: 4.4.3
-    ocp_ver: 4.4.10
+    rhcos_ver: 4.3.8
+    ocp_ver: 4.3.26
     ocp_name: ocp4
     net_domain: lab.io
     ocp_domain: ocp4.lab.io
     ocp_base_dir: "/opt/openshift"
     libvirt_connect: "qemu:///system"
-    libvirt_net: openshift
   children:
     nodes:
       hosts:

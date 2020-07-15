@@ -18,15 +18,16 @@
       {{ ' --vcpus ' + libvirt_vcpus | string }}
       {{ ' --memory ' + libvirt_memory | string }}
       {{ ' --disk pool=' +  libvirt_disk_pool + ',size=' + libvirt_disk_size | string }}
-      {{ ' --network ' + libvirt_bridge | ternary('bridge=' + libvirt_bridge, 'network=' + libvirt_net, omit) + ip_mac | ternary(',mac=' + ip_mac,'') }}
+      {{ ' --network ' + }}
+      {{ (libvirt_bridge != '') | ternary('bridge=' + libvirt_bridge, 'network=' + libvirt_net, omit) + ',mac=' + ip_mac }}
       {{ ' --os-variant ' + libvirt_os_variant }}
       {{ ' --boot ' + libvirt_boot }}
-      {{ ' --graphics ' + libvirt_graphics | ternary('vnc,listen=0.0.0.0','none') }}
+      {{ ' --graphics ' + (libvirt_graphics == 'vnc') | ternary('vnc,listen=0.0.0.0','none') }}
       {{ ' --noautoconsole --wait=-1' }}
     virt_source: >
-      {{ libvirt_location | ternary(' --location=' + libvirt_location,' --pxe')  }}
-      {{ libvirt_location | ternary(' --initrd-inject=' + libvirt_ksfile,'')  }}
-      {{ libvirt_location | ternary(' --extra-args="ks=file:/' + libvirt_ksfile | basename + ' net.ifnames=0 biosdevname=0"','') }}
+      {{ (libvirt_location != '') | ternary(' --location=' + libvirt_location,' --pxe')  }}
+      {{ (libvirt_location != '') | ternary(' --initrd-inject=' + libvirt_ksfile,'')  }}
+      {{ (libvirt_location != '') | ternary(' --extra-args="ks=file:/' + libvirt_ksfile | basename + ' net.ifnames=0 biosdevname=0"','') }}
 
 - name: virt-install command
   debug:

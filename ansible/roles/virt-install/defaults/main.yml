@@ -11,7 +11,6 @@ libvirt_memory: "2048"
 libvirt_disk_size: "8"
 libvirt_disk_pool: "default"
 libvirt_os_variant: "centos7.0"
-libvirt_net: 'default'
 libvirt_bridge: ''
 libvirt_graphics: ''
 libvirt_location: ''
