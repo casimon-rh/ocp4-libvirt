@@ -67,7 +67,7 @@
 
 - name: Wait for the installation process
   hosts: helper
-  var:
+  vars:
     kubeconfig: "{{ ocp_base_dir + '/' + ocp_name + '/auth/kubeconfig' }}"
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
   tasks:
