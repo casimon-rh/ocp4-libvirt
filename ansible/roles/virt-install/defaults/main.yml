@@ -12,7 +12,7 @@ libvirt_disk_size: "8"
 libvirt_disk_pool: "default"
 libvirt_os_variant: "centos7.0"
 libvirt_bridge: ''
-libvirt_graphics: ''
+libvirt_graphics: 'spice'
 libvirt_location: ''
 
 ks_pw: '$6$password$u/Cn/tSGIYFtqv4AwZ9tjP1gMxjlvLHt3KO8zbK6ZnMn8anv6tSCo.XidktlU0MdRjWe3./lahF9FTMcnja9q.'

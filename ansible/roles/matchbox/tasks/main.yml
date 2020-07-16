@@ -37,16 +37,6 @@
     shell: /bin/false
     create_home: no 
 
-- name: enable matchbox
-  service:
-    name: matchbox
-    enabled: yes
-
-- name: start matchbox
-  service:
-    name: matchbox
-    state: started
-
 - name: Create matchbox directory tree
   file:
     path: "{{ item }}"

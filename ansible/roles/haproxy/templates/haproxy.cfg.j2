@@ -76,9 +76,6 @@ frontend ingress_http
 backend ingress_http
    balance roundrobin
    mode tcp
-{% for master in groups['masters'] | sort %}
-   server {{ master }} {{ master }}.{{ ocp_domain }}:80 check
-{% endfor %}
 {% for worker in groups['workers'] | sort %}
    server {{ worker}} {{ worker }}.{{ ocp_domain }}:80 check
 {% endfor %}
@@ -95,9 +92,6 @@ backend ingress_http
  backend ingress_https
    balance roundrobin
    mode tcp
-{% for master in groups['masters'] | sort %}
-   server {{ master }} {{ master }}.{{ ocp_domain }}:443 check
-{% endfor %}
 {% for worker in groups['workers'] | sort %}
    server {{ worker}} {{ worker }}.{{ ocp_domain }}:443 check
 {% endfor %}

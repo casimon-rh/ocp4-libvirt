@@ -6,47 +6,40 @@
   roles:
     - virt-install
 
+
 - name: Create control plane
   hosts: masters
   connection: local
+  vars:
+    ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
   roles:
     - virt-install
-
-- name: Wait for bootstrap process
-  hosts: helper
   tasks:
-    - set_fact: 
-        ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
-
-    - name: openshift-install wait-for bootstrap-complete
+    - name: Wait for bootstrap process
       command: openshift-install wait-for bootstrap-complete
       args:
         chdir: "{{ ocp_cluster_dir}}"
-      async: 1000
+      async: 1800
       poll: 0
       register: bootstrap_bg
+
+    - debug:
+        msg: "Wait for port 22623 to become open on {{ inventory_hostname }}"
+
+    - name: Port 22623 open on host
+      wait_for:
+        port: 22623
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+        delay: 15 
+      connection: local
 
     - name: Wait for bootstrap to complete
       async_status: jid={{ bootstrap_bg.ansible_job_id }}
       register: job_result
       until: job_result.finished
-      retries: 80
-      delay: 15
+      retries: 120
+      delay: 30 
 
-#    - debug:
-#        msg: "Monitoring file {{ ocp_install_log }}"
-#
-#    - name: Bootstrap is complete 
-#      wait_for:
-#        path: "{{ ocp_install_log }}"
-#        search_regex: "Bootstrap status: complete"
-#        timeout: 600
-
-- name: Create workers
-  hosts: workers
-  connection: local
-  roles:
-    - virt-install
 
 - name: Remove bootstrap
   hosts: bootstrap
@@ -54,35 +47,53 @@
   roles:
     - virt-remove
 
-- name: Wait for installation process
-  hosts: helper
+
+- name: Create workers
+  hosts: workers
+  connection: local
+  roles:
+    - virt-install
   tasks:
-    - name: openshift-install wait-for install-complete
+    - debug:
+        msg: "Wait for port 10250 to become open on {{ inventory_hostname }}"
+
+    - name: Port 10250 open on host
+      wait_for:
+        port: 10250
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+        delay: 15 
+      connection: local
+
+
+- name: Wait for the installation process
+  hosts: helper
+  var:
+    kubeconfig: "{{ ocp_base_dir + '/' + ocp_name + '/auth/kubeconfig' }}"
+    ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
+  tasks:
+    - name: Running openshift-install wait-for install-complete
       command: openshift-install wait-for install-complete
       args:
         chdir: "{{ ocp_cluster_dir}}"
-      async: 1000
+      async: 1800
       poll: 0
       register: install_bg
 
-    - name: Wait for install to complete
+    - wait_for:
+        timeout: 10
+
+    - name: Approve first set of CSR from workers
+      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+
+    - wait_for:
+        timeout: 5
+
+    - name: Approve second set of CSR from workers
+      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+
+    - name: Install complete
       async_status: jid={{ install_bg.ansible_job_id }}
       register: job_result
       until: job_result.finished
       retries: 80
       delay: 15
-
-#- name: Wait for install complete
-#  hosts: bastion
-#  connection: local
-#  become: yes
-#  vars:
-#    ocp_install_log: "{{ ocp_dir + '/' + ocp_name + '/.openshift_install.log' }}"
-#  tasks:
-#    - debug:
-#        msg: "Monitoring file {{ ocp_install_log }}"
-#
-#    - name: Install is complete 
-#      wait_for:
-#        path: "{{ ocp_install_log }}"
-#        search_regex: "Install status: complete"

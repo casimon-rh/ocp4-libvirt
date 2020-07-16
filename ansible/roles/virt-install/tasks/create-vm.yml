@@ -24,7 +24,7 @@
       {{ ' --os-variant ' + libvirt_os_variant }}
       {{ ' --boot ' + libvirt_boot }}
       {{ (libvirt_graphics == 'vnc') | ternary('--graphics vnc,listen=0.0.0.0',libvirt_graphics) }}
-      {{ ' --wait=-1' }}
+      {{ ' --noautoconsole --wait=-1' }}
     virt_source: >
       {{ (libvirt_location != '') | ternary(' --location=' + libvirt_location,' --pxe')  }}
       {{ (libvirt_location != '') | ternary(' --initrd-inject=' + libvirt_ksfile,'')  }}
