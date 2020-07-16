@@ -15,6 +15,8 @@ libvirt_bridge: ''
 libvirt_graphics: 'spice'
 libvirt_location: ''
 
+port: 22
+
 ks_pw: '$6$password$u/Cn/tSGIYFtqv4AwZ9tjP1gMxjlvLHt3KO8zbK6ZnMn8anv6tSCo.XidktlU0MdRjWe3./lahF9FTMcnja9q.'
 ks_auth_key: "{{ lookup('file', 'files/pubkey') }}"
 ip_cidr: ''

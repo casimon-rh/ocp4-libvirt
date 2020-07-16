@@ -3,21 +3,12 @@
 - name: Create bootstrap machine
   hosts: bootstrap
   connection: local
+  vars:
+    port: 22623
   roles:
-    - virt-install
-  tasks:
-    - debug:
-        msg: "Wait for port 22623 to become open on {{ inventory_hostname }}"
-
-    - name: Port 22623 open on host
-      wait_for:
+    - role: virt-install
+      vars:
         port: 22623
-        host: "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
-        timeout: 600
-        delay: 15 
-      delegate_to: helper
-
-
 
 - name: Create control plane
   hosts: masters
@@ -25,7 +16,9 @@
   vars:
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
   roles:
-    - virt-install
+    - role: virt-install
+      vars:
+        port: 22623
   tasks:
     - name: Wait for bootstrap process
       command: openshift-install wait-for bootstrap-complete
@@ -34,17 +27,6 @@
       async: 1800
       poll: 0
       register: bootstrap_bg
-      delegate_to: helper
-
-    - debug:
-        msg: "Wait for port 22623 to become open on {{ inventory_hostname }}"
-
-    - name: Port 22623 open on host
-      wait_for:
-        port: 22623
-        host: "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
-        timeout: 600
-        delay: 15 
       delegate_to: helper
 
     - name: Wait for bootstrap to complete
@@ -56,31 +38,15 @@
       delegate_to: helper
 
 
-- name: Remove bootstrap
-  hosts: bootstrap
-  connection: local
-  roles:
-    - virt-remove
-
-
 - name: Create workers
   hosts: workers
   connection: local
   roles:
-    - virt-install
-  tasks:
-    - debug:
-        msg: "Wait for port 10250 to become open on {{ inventory_hostname }}"
-
-    - name: Port 10250 open on host
-      wait_for:
+    - role: virt-install
+      vars:
         port: 10250
-        host: "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
-        delay: 15 
-      delegate_to: helper
 
-
-- name: Wait for the installation process
+- name: Wait for the installation to complete
   hosts: helper
   vars:
     kubeconfig: "{{ ocp_base_dir + '/' + ocp_name + '/auth/kubeconfig' }}"
@@ -94,9 +60,6 @@
       poll: 0
       register: install_bg
 
-    - wait_for:
-        timeout: 10
-
     - name: Approve first set of CSR from workers
       shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
 
@@ -106,9 +69,16 @@
     - name: Approve second set of CSR from workers
       shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
 
-    - name: Install complete
+    - name: Cluster install complete
       async_status: jid={{ install_bg.ansible_job_id }}
       register: job_result
       until: job_result.finished
       retries: 80
-      delay: 15
+      delay: 10
+
+
+- name: Remove bootstrap
+  hosts: bootstrap
+  connection: local
+  roles:
+    - virt-remove

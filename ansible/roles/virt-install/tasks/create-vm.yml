@@ -37,5 +37,13 @@
 - name: Create new vm on KVM
   command: "{{ virt_command + virt_source }}"
 
-#      {{ ' --graphics ' + (libvirt_graphics == 'vnc') | ternary('vnc,listen=0.0.0.0','none') }}
-#      {{ ' --noautoconsole --wait=-1' }}
+- debug:
+    msg: "Wait for port {{ port }} to become open on {{ inventory_hostname }}"
+
+- name: Port {{ port }} open on host
+  wait_for:
+    port: "{{ port }}"
+    host: "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
+    timeout: 600
+    delay: 10 
+  delegate_to: helper
