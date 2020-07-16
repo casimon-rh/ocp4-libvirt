@@ -16,14 +16,15 @@
       {{ ' --connect ' + libvirt_connect }}
       {{ ' --name ' + inventory_hostname }}
       {{ ' --vcpus ' + libvirt_vcpus | string }}
+      {{ ' --cpu ' + libvirt_cpu_model }}
       {{ ' --memory ' + libvirt_memory | string }}
       {{ ' --disk pool=' +  libvirt_disk_pool + ',size=' + libvirt_disk_size | string }}
       {{ ' --network ' }}
       {{ (libvirt_bridge != '') | ternary('bridge=' + libvirt_bridge, 'network=' + libvirt_net) + ',mac=' + ip_mac }}
       {{ ' --os-variant ' + libvirt_os_variant }}
       {{ ' --boot ' + libvirt_boot }}
-      {{ ' --graphics ' + (libvirt_graphics == 'vnc') | ternary('vnc,listen=0.0.0.0','none') }}
-      {{ ' --noautoconsole --wait=-1' }}
+      {{ (libvirt_graphics == 'vnc') | ternary('--graphics vnc,listen=0.0.0.0',libvirt_graphics) }}
+      {{ ' --wait=-1' }}
     virt_source: >
       {{ (libvirt_location != '') | ternary(' --location=' + libvirt_location,' --pxe')  }}
       {{ (libvirt_location != '') | ternary(' --initrd-inject=' + libvirt_ksfile,'')  }}
@@ -35,3 +36,6 @@
 
 - name: Create new vm on KVM
   command: "{{ virt_command + virt_source }}"
+
+#      {{ ' --graphics ' + (libvirt_graphics == 'vnc') | ternary('vnc,listen=0.0.0.0','none') }}
+#      {{ ' --noautoconsole --wait=-1' }}
