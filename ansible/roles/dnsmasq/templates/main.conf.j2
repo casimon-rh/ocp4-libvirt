@@ -1,4 +1,5 @@
 {# jinja2 template #}
+{% set ip_addr = ip_cidr | ipaddr('address') %}
 #  api api-int apps
 address=/api.{{ ocp_domain }}/{{ ip_addr }}
 address=/api-int.{{ ocp_domain }}/{{ ip_addr }}
