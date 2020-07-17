@@ -47,16 +47,17 @@ all:
               ip_a: "192.168.100.83"
               ip_mac: '52:54:00:60:30:83'
         workers:
-          hosts:
-            worker-0:
-              libvirt_vcpus: 2
-              libvirt_memory: 8192
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.91"
-              ip_mac: '52:54:00:60:30:91'
-            worker-1:
-              libvirt_vcpus: 2
-              libvirt_memory: 4092
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.92"
-              ip_mac: '52:54:00:60:30:92'
+#          hosts:
+#            worker-0:
+#              libvirt_vcpus: 2
+#              libvirt_memory: 8192
+#              libvirt_disk_size: 40
+#              ip_a: "192.168.100.91"
+#              ip_mac: '52:54:00:60:30:91'
+#            worker-1:
+#              libvirt_vcpus: 2
+#              libvirt_memory: 4092
+#              libvirt_disk_size: 40
+#              ip_a: "192.168.100.92"
+#              ip_mac: '52:54:00:60:30:92'
+#

@@ -48,6 +48,7 @@
     - role: virt-install
       vars:
         port: 10250
+      when: groups['workers'] | length > 0
 
 - name: Wait for the installation to complete
   hosts: helper
