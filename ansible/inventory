@@ -9,8 +9,8 @@ all:
       ip_cidr: "192.168.100.2/24"
       ip_gw: "192.168.100.1"
   vars:
-    rhcos_ver: 4.3.8
-    ocp_ver: 4.3.26
+    rhcos_ver: 4.5.1
+    ocp_ver: 4.5.0
     ocp_name: ocp4
     net_domain: lab.io
     ocp_domain: ocp4.lab.io
@@ -36,13 +36,13 @@ all:
               ip_mac: '52:54:00:60:30:81'
             master-1:
               libvirt_vcpus: 4
-              libvirt_memory: 6208
+              libvirt_memory: 8192
               libvirt_disk_size: 40
               ip_a: "192.168.100.82"
               ip_mac: '52:54:00:60:30:82'
             master-2:
               libvirt_vcpus: 4
-              libvirt_memory: 6208
+              libvirt_memory: 8192
               libvirt_disk_size: 40
               ip_a: "192.168.100.83"
               ip_mac: '52:54:00:60:30:83'
@@ -50,7 +50,7 @@ all:
           hosts:
             worker-0:
               libvirt_vcpus: 2
-              libvirt_memory: 4092
+              libvirt_memory: 8192
               libvirt_disk_size: 40
               ip_a: "192.168.100.91"
               ip_mac: '52:54:00:60:30:91'

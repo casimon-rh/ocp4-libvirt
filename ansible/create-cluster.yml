@@ -18,7 +18,7 @@
   roles:
     - role: virt-install
       vars:
-        port: 22623
+        port: 10250
   tasks:
     - name: Wait for bootstrap process
       command: openshift-install wait-for bootstrap-complete
@@ -52,6 +52,15 @@
     kubeconfig: "{{ ocp_base_dir + '/' + ocp_name + '/auth/kubeconfig' }}"
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
   tasks:
+    - name: Approve first set of CSR from workers
+      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+
+    - wait_for:
+        timeout: 15
+
+    - name: Approve second set of CSR from workers
+      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+
     - name: Running openshift-install wait-for install-complete
       command: openshift-install wait-for install-complete
       args:
@@ -60,21 +69,12 @@
       poll: 0
       register: install_bg
 
-    - name: Approve first set of CSR from workers
-      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
-
-    - wait_for:
-        timeout: 5
-
-    - name: Approve second set of CSR from workers
-      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
-
     - name: Cluster install complete
       async_status: jid={{ install_bg.ansible_job_id }}
       register: job_result
       until: job_result.finished
-      retries: 80
-      delay: 10
+      retries: 120
+      delay: 30
 
 
 - name: Remove bootstrap
