@@ -27,7 +27,7 @@
       async: 1800
       poll: 0
       register: bootstrap_bg
-      delegate_to: helper
+      connection: local
 
     - name: Wait for bootstrap to complete
       async_status: jid={{ bootstrap_bg.ansible_job_id }}
@@ -35,7 +35,7 @@
       until: job_result.finished
       retries: 120
       delay: 30 
-      delegate_to: helper
+      connection: local
 
 
 - name: Create workers

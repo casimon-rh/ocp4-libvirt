@@ -46,4 +46,4 @@
     host: "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
     timeout: 600
     delay: 10 
-  delegate_to: helper
+  connection: local

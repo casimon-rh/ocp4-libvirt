@@ -13,3 +13,19 @@
     - `cockpit`
 
   The idea is to have a helper node with a desktop environment set, then connect to it using the internal libvirt vnc server and work from there.
+
+Within the virtualization host, add a record into the /etc/hosts file for the helper node.
+
+```config
+192.168.100.2 helper.lab.io helper
+```
+
+Also add the DNS provided by the helper into the resolved config.
+
+```ini
+vim /etc/systemd/resolved.conf.d/dns_servers.conf
+
+[Resolve]
+DNS=192.168.100.2
+Domains=ocp4.lab.io
+```

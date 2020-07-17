@@ -76,9 +76,15 @@ frontend ingress_http
 backend ingress_http
    balance roundrobin
    mode tcp
-{% for worker in groups['workers'] | sort %}
+{% if groups['workers'] | length < 1 %}
+  {% for master in groups['masters'] | sort %}
+   server {{ master}} {{ master }}.{{ ocp_domain }}:80 check
+  {% endfor %}
+{% else %}}
+  {% for worker in groups['workers'] | sort %}
    server {{ worker}} {{ worker }}.{{ ocp_domain }}:80 check
-{% endfor %}
+  {% endfor %}
+{% endif %}
 
 # ---------------------------------------------------------------------
 # round robin balancing for OCP Ingress Secure Port
@@ -92,9 +98,15 @@ backend ingress_http
  backend ingress_https
    balance roundrobin
    mode tcp
-{% for worker in groups['workers'] | sort %}
-   server {{ worker}} {{ worker }}.{{ ocp_domain }}:443 check
-{% endfor %}
+{% if groups['workers'] | length < 1 %}
+  {% for master in groups['masters'] | sort %}
+   server {{ master}} {{ master }}.{{ ocp_domain }}:80 check
+  {% endfor %}
+{% else %}}
+  {% for worker in groups['workers'] | sort %}
+   server {{ worker}} {{ worker }}.{{ ocp_domain }}:80 check
+  {% endfor %}
+{% endif %}
 
 # ---------------------------------------------------------------------
 # Exposing HAProxy Statistic Page

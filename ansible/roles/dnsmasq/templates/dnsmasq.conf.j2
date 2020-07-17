@@ -1,26 +1,35 @@
-{# jinja2 template #}
+domain-needed
+bogus-priv
+no-hosts
+no-resolv
+no-poll
+#all-servers
+#dns-loop-detect
+server=8.8.8.8
+server=8.8.4.4
+cache-size=1000
+conf-dir=/etc/dnsmasq.d,*.conf
+dns-forward-max=300
+#log-queries
+#log-dhcp
+
 {# define variables for later use #}
 {% set ip_first_usable = ip_cidr | ipaddr('next_usable') %}
 {% set ip_last_usable = ip_cidr | next_nth_usable(8) %}
 {% set ip_addr = ip_cidr | ipaddr('address') %}
-domain={{ ocp_domain }}
-local=/{{ ocp_domain }}/{{ ip_addr }}
+domain={{ net_domain }}
+local=/{{ net_domain }}/{{ ip_addr }}
 
 # Gateway
-dhcp-option=option:router,{{ ip_gw  }}
+dhcp-option=option:router,{{ ip_gw }}
 
 # DNS options
 dhcp-option=option:dns-server,{{ ip_addr }}
 dhcp-range={{ ip_first_usable }},{{ ip_last_usable }},12h
 dhcp-option=option:ntp-server,{{ ip_addr }}
 
-#  A records for API and APPs
-address=/api.{{ ocp_domain }}/{{ ip_addr }}
-address=/api-int.{{ ocp_domain }}/{{ ip_addr }}
-address=/apps.{{ ocp_domain }}/{{ ip_addr }}
-
 #  iPXE server for RHCOS
-address=/matchbox.{{ ocp_domain }}/{{ ip_addr }}
+address=/matchbox.{{ net_domain }}/{{ ip_addr }}
 
 # TFTP and iPXE
 enable-tftp
@@ -40,4 +49,4 @@ dhcp-boot=tag:efi64,ipxe-x86_64.efi
 
 # iPXE - chainload to matchbox ipxe boot script
 dhcp-userclass=set:ipxe,iPXE
-dhcp-boot=tag:ipxe,http://matchbox.{{ ocp_domain }}:8080/boot.ipxe
+dhcp-boot=tag:ipxe,http://matchbox.{{ net_domain }}:8080/boot.ipxe

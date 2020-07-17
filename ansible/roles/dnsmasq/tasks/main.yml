@@ -7,26 +7,29 @@
   loop: "{{ packages }}"
 
 - name: Deploy dnsmasq main config
-  copy:
-    src: dnsmasq.conf
+  template:
+    src: dnsmasq.conf.j2
     dest: /etc/dnsmasq.conf
     mode: 0644
 
-- name: Deploy dnsmasq OpenShift config
+- name: Deploy dnsmasq main cluster config
   template:
-    src: ocp-main.conf.j2
-    dest: /etc/dnsmasq.d/ocp-main.conf
+    src: main.conf.j2
+    dest: "/etc/dnsmasq.d/{{ ocp_name }}-main.conf"
     mode: 0644
 
-- name: Deploy dnsmasq OpenShift configs
+- name: Deploy dnsmasq bootstrap configs
   template:
-    src: "{{ item }}"
-    dest: "/etc/dnsmasq.d/{{ item }}"
+    src: "bootstrap.conf.j2"
+    dest: "/etc/dnsmasq.d/{{ ocp_name }}-bootstrap.conf"
     mode: 0644
-  loop:
-    - ocp-bootstrap.conf
-    - ocp-masters.conf
-    - ocp-workers.conf
+
+- name: Deploy dnsmasq worker configs
+  template:
+    src: "workers.conf.j2"
+    dest: "/etc/dnsmasq.d/{{ ocp_name }}-workers.conf"
+    mode: 0644
+  when: groups['workers'] | length > 0
 
 - name: Disable dns in NetworkManager
   lineinfile:

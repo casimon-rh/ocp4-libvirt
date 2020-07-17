@@ -1,8 +1,6 @@
 ---
 # default vars
 net_domain: "lab.io"
-ocp_num_masters: "1"
-ocp_num_workers: "2"
 ocp_name: "ocp4"
 
 ocp_base_dir : "/opt/openshift"

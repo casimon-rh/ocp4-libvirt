@@ -1,3 +1,9 @@
+{# jinja2 template #}
+#  api api-int apps
+address=/api.{{ ocp_domain }}/{{ ip_addr }}
+address=/api-int.{{ ocp_domain }}/{{ ip_addr }}
+address=/apps.{{ ocp_domain }}/{{ ip_addr }}
+
 #  control plane
 {# loop over the members of group masters from inventory #}
 {# use iteration variable loop.index0 to set etcd records #}

@@ -1,7 +1,8 @@
 ---
 rhcos_mirror: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos"
 ocp_mirror: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
-
+ocp_num_masters: "{{ group['masters'] | length }}"
+ocp_num_workers: "{{ group['workers'] | length }}"
 ocp_cluster_dir: "{{ ocp_base_dir + '/' + ocp_name }}"
 install_config: install-config.yaml
 pull_secret: pull_secret
