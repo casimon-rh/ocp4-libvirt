@@ -10,24 +10,28 @@
       vars:
         port: 22623
 
+
 - name: Create control plane
   hosts: masters
   connection: local
-  vars:
-    ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
   roles:
     - role: virt-install
       vars:
         port: 10250
+
+
+- name: Wait for bootstrap process
+  hosts: helper
+  vars:
+    ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
   tasks:
-    - name: Wait for bootstrap process
+    - name: Running openshift-install wait-for bootstrap-complete
       command: openshift-install wait-for bootstrap-complete
       args:
         chdir: "{{ ocp_cluster_dir}}"
       async: 1800
       poll: 0
       register: bootstrap_bg
-      connection: local
 
     - name: Wait for bootstrap to complete
       async_status: jid={{ bootstrap_bg.ansible_job_id }}
@@ -35,7 +39,6 @@
       until: job_result.finished
       retries: 120
       delay: 30 
-      connection: local
 
 
 - name: Create workers
