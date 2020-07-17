@@ -80,7 +80,7 @@ backend ingress_http
   {% for master in groups['masters'] | sort %}
    server {{ master}} {{ master }}.{{ ocp_domain }}:80 check
   {% endfor %}
-{% else %}}
+{% else %}
   {% for worker in groups['workers'] | sort %}
    server {{ worker}} {{ worker }}.{{ ocp_domain }}:80 check
   {% endfor %}
@@ -102,7 +102,7 @@ backend ingress_http
   {% for master in groups['masters'] | sort %}
    server {{ master}} {{ master }}.{{ ocp_domain }}:80 check
   {% endfor %}
-{% else %}}
+{% else %}
   {% for worker in groups['workers'] | sort %}
    server {{ worker}} {{ worker }}.{{ ocp_domain }}:80 check
   {% endfor %}
