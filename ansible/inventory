@@ -34,7 +34,7 @@ all:
               libvirt_disk_size: 40
               ip_a: "192.168.100.81"
               ip_mac: '52:54:00:60:30:81'
-             master-1:
+            master-1:
               libvirt_vcpus: 4
               libvirt_memory: 6208
               libvirt_disk_size: 40
