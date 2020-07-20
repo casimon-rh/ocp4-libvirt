@@ -33,7 +33,7 @@
       poll: 0
       register: bootstrap_bg
 
-    - name: Wait for bootstrap to complete
+    - name: Bootstrap complete
       async_status: jid={{ bootstrap_bg.ansible_job_id }}
       register: job_result
       until: job_result.finished
@@ -58,12 +58,15 @@
   tasks:
     - name: Approve first set of CSR from workers
       shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+      when: groups['workers'] | length > 0
 
     - wait_for:
         timeout: 15
+      when: groups['workers'] | length > 0
 
     - name: Approve second set of CSR from workers
       shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+      when: groups['workers'] | length > 0
 
     - name: Running openshift-install wait-for install-complete
       command: openshift-install wait-for install-complete
