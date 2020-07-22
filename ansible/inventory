@@ -14,6 +14,7 @@ all:
     ocp_name: ocp4
     net_domain: lab.io
     ocp_domain: ocp4.lab.io
+    ocp_cni: OVNKubernetes
     ocp_base_dir: "/opt/openshift"
     libvirt_connect: "qemu:///system"
   children:
@@ -30,34 +31,33 @@ all:
           hosts:
             master-0:
               libvirt_vcpus: 4
-              libvirt_memory: 8192
+              libvirt_memory: 12288
               libvirt_disk_size: 40
               ip_a: "192.168.100.81"
               ip_mac: '52:54:00:60:30:81'
-            master-1:
-              libvirt_vcpus: 4
-              libvirt_memory: 8192
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.82"
-              ip_mac: '52:54:00:60:30:82'
-            master-2:
-              libvirt_vcpus: 4
-              libvirt_memory: 8192
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.83"
-              ip_mac: '52:54:00:60:30:83'
-        workers:
-#          hosts:
-#            worker-0:
-#              libvirt_vcpus: 2
+#            master-1:
+#              libvirt_vcpus: 4
 #              libvirt_memory: 8192
 #              libvirt_disk_size: 40
-#              ip_a: "192.168.100.91"
-#              ip_mac: '52:54:00:60:30:91'
-#            worker-1:
-#              libvirt_vcpus: 2
-#              libvirt_memory: 4092
+#              ip_a: "192.168.100.82"
+#              ip_mac: '52:54:00:60:30:82'
+#            master-2:
+#              libvirt_vcpus: 4
+#              libvirt_memory: 8192
 #              libvirt_disk_size: 40
-#              ip_a: "192.168.100.92"
-#              ip_mac: '52:54:00:60:30:92'
-#
+#              ip_a: "192.168.100.83"
+#              ip_mac: '52:54:00:60:30:83'
+        workers:
+          hosts:
+            worker-0:
+              libvirt_vcpus: 2
+              libvirt_memory: 6144
+              libvirt_disk_size: 40
+              ip_a: "192.168.100.91"
+              ip_mac: '52:54:00:60:30:91'
+            worker-1:
+              libvirt_vcpus: 2
+              libvirt_memory: 6144
+              libvirt_disk_size: 40
+              ip_a: "192.168.100.92"
+              ip_mac: '52:54:00:60:30:92'

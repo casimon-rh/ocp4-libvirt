@@ -2,6 +2,7 @@
 # default vars
 net_domain: "lab.io"
 ocp_name: "ocp4"
+ocp_cni: OpenShiftSDN
 
 ocp_base_dir : "/opt/openshift"
 
