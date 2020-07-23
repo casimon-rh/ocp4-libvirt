@@ -4,7 +4,8 @@ no-hosts
 no-resolv
 no-poll
 #all-servers
-#dns-loop-detect
+dns-loop-detect
+interface={{ ansible_default_ipv4.interface }}
 server=8.8.8.8
 server=8.8.4.4
 cache-size=1000
