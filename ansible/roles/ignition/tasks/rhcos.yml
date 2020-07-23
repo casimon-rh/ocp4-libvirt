@@ -2,7 +2,7 @@
 
 - name: Define url of RHCOS dependencies
   set_fact:
-    rhcos_url: "{{ rhcos_mirror + '/' + rhcos_minver + '/' + rhcos_ver }}"
+    rhcos_url: "{{ rhcos_mirror + '/' + rhcos_ver_majmin + '/' + rhcos_version }}"
 
 - name: Define url of RHCOS checksum
   set_fact:

@@ -6,6 +6,6 @@ ocp_cni: OpenShiftSDN
 
 ocp_base_dir : "/opt/openshift"
 
-rhcos_ver: "latest"
+rhcos_version: "latest"
 ocp_ver: "4.3.0"
-rhcos_minver: "{{ ocp_ver.split('.')[0] + '.' + ocp_ver.split('.')[1] }}"
+rhcos_ver_majmin: "{{ ocp_ver.split('.')[0] + '.' + ocp_ver.split('.')[1] }}"
