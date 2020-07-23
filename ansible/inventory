@@ -31,7 +31,7 @@ all:
           hosts:
             master-0:
               libvirt_vcpus: 4
-              libvirt_memory: 12288
+              libvirt_memory: 14336
               libvirt_disk_size: 40
               ip_a: "192.168.100.81"
               ip_mac: '52:54:00:60:30:81'
