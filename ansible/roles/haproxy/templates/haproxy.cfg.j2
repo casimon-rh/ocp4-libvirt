@@ -100,11 +100,11 @@ backend ingress_http
    mode tcp
 {% if groups['workers'] | length < 1 %}
   {% for master in groups['masters'] | sort %}
-   server {{ master}} {{ master }}.{{ ocp_domain }}:80 check
+   server {{ master}} {{ master }}.{{ ocp_domain }}:443 check
   {% endfor %}
 {% else %}
   {% for worker in groups['workers'] | sort %}
-   server {{ worker}} {{ worker }}.{{ ocp_domain }}:80 check
+   server {{ worker}} {{ worker }}.{{ ocp_domain }}:443 check
   {% endfor %}
 {% endif %}
 
