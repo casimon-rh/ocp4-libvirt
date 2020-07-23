@@ -26,7 +26,7 @@
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
     kubeconfig: "{{ ocp_cluster_dir + '/auth/kubeconfig' }}"
     ocp_ver_min: "{{ ocp_ver.split('.')[1] }}" 
-    patch_etcd: |
+    patch_etcd: >
       oc --config="{{ kubeconfig }}"
       patch etcd cluster
       -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableEtcd": true}}}'
@@ -34,7 +34,7 @@
   tasks:
     - name: Patch etcd cluster when single master
       shell: "{{ patch_etcd }}"
-      when: ocp_ver_min | int  > 3 and groups['masters'] | length = 1
+      when: ocp_ver_min | int  > 3 and groups['masters'] | length | int == 1
 
     - name: Running openshift-install wait-for bootstrap-complete
       command: openshift-install wait-for bootstrap-complete
