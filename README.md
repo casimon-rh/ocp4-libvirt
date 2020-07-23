@@ -29,3 +29,42 @@ vim /etc/systemd/resolved.conf.d/dns_servers.conf
 DNS=192.168.100.2
 Domains=ocp4.lab.io
 ```
+
+If you have a single master, you need to adjust the clusterversion operator. Create a YAML file with the following contents:
+
+```shell
+oc patch clusterversion version --type json -p "$(cat <<- EOF
+- op: add
+  path: /spec/overrides
+  value:
+    - group: apps/v1
+      kind: Deployment
+      name: etcd-quorum-guard
+      namespace: openshift-machine-config-operator
+      unmanaged: true
+EOF
+)"
+```
+
+Downscale etcd-quorum-guard to one:
+
+```shell
+oc scale --replicas=1 deployment/etcd-quorum-guard -n openshift-machine-config-operator
+```
+
+```shell
+oc scale --replicas=1 deployment.apps/console -n openshift-console
+
+oc scale --replicas=1 deployment.apps/downloads -n openshift-console
+
+oc scale --replicas=1 deployment.apps/oauth-openshift -n openshift-authentication
+
+oc scale --replicas=1 deployment.apps/packageserver -n openshift-operator-lifecycle-manager
+
+
+# NOTE: When enabled, the Operator will auto-scale this services back to original quantity
+oc scale --replicas=1 deployment.apps/prometheus-adapter -n openshift-monitoring
+oc scale --replicas=1 deployment.apps/thanos-querier -n openshift-monitoring
+oc scale --replicas=1 statefulset.apps/prometheus-k8s -n openshift-monitoring
+oc scale --replicas=1 statefulset.apps/alertmanager-main -n openshift-monitoring
+```

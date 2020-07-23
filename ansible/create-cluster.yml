@@ -41,6 +41,13 @@
       delay: 30 
 
 
+- name: Remove bootstrap
+  hosts: bootstrap
+  connection: local
+  roles:
+    - virt-remove
+
+
 - name: Create workers
   hosts: workers
   connection: local
@@ -82,10 +89,3 @@
       until: job_result.finished
       retries: 120
       delay: 30
-
-
-- name: Remove bootstrap
-  hosts: bootstrap
-  connection: local
-  roles:
-    - virt-remove
