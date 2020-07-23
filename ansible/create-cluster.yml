@@ -24,7 +24,18 @@
   hosts: helper
   vars:
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
+    kubeconfig: "{{ ocp_cluster_dir + '/auth/kubeconfig' }}"
+    ocp_ver_min: "{{ ocp_ver.split('.')[1] }}" 
+    patch_etcd: |
+      oc --config="{{ kubeconfig }}"
+      oc patch etcd cluster
+      -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableEtcd": true}}}'
+      --type=merge
   tasks:
+    - name: Patch etcd cluster when single master
+      shell: "{{ patch_etcd }}"
+      when: ocp_ver_min | int  > 3 and groups['masters'] | length = 1
+
     - name: Running openshift-install wait-for bootstrap-complete
       command: openshift-install wait-for bootstrap-complete
       args:
@@ -69,8 +80,8 @@
     - after-bootstrap
     - wait-complete
   vars:
-    kubeconfig: "{{ ocp_base_dir + '/' + ocp_name + '/auth/kubeconfig' }}"
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
+    kubeconfig: "{{ ocp_cluster_dir + '/auth/kubeconfig' }}"
   tasks:
     - name: Approve first set of CSR from workers
       shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
