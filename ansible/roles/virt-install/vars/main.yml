@@ -6,4 +6,4 @@ libvirt_net: 'openshift'
 libvirt_kstemplate: "rhel8.cfg.j2"
 libvirt_ksfile: "/tmp/{{ libvirt_name }}.cfg"
 libvirt_boot_order: "hd,cdrom,network,menu=on"
-libvirt_cpu_model: "cpu64-rhel6"
+libvirt_cpu_model: "qemu64"
