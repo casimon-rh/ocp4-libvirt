@@ -8,7 +8,7 @@
   set_fact:
     rhcos_checksum: "{{ rhcos_url + '/sha256sum.txt' }}"
 
-- name: Download RHCOS sha256sum file
+- name: Download RHCOS sha256sum from {{ rhcos_url }}
   get_url:
     url: "{{ rhcos_checksum }}"
     dest: "{{ matchbox_rhcos_checksum }}"

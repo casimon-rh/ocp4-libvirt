@@ -4,6 +4,7 @@ ocp_mirror: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
 ocp_num_masters: "{{ groups['masters'] | length }}"
 ocp_num_workers: "{{ groups['workers'] | length }}"
 ocp_cluster_dir: "{{ ocp_base_dir + '/' + ocp_name }}"
+rhcos_ver_majmin: "{{ ocp_ver.split('.')[0] + '.' + ocp_ver.split('.')[1] }}"
 install_config: install-config.yaml
 pull_secret: pull_secret
 ssh_key: "{{ocp_base_dir}}/id_ocp_rsa"
