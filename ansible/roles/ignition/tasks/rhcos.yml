@@ -15,7 +15,7 @@
     owner: matchbox
     group: matchbox
 
-- name: List RHCOS files from checksum file
+- name: List RHCOS files from checksum file {{ matchbox_rhcos_checksum }}
   command: "awk '/kernel|initramfs|metal/ { print $2 }' {{ matchbox_rhcos_checksum }}"
   register: rhcos_files
 

@@ -43,6 +43,9 @@
 
 - name: Remove bootstrap
   hosts: bootstrap
+  tags:
+    - remove-bootstrap
+    - after-bootstrap
   connection: local
   roles:
     - virt-remove
@@ -50,6 +53,9 @@
 
 - name: Create workers
   hosts: workers
+  tags:
+    - create-workers
+    - after-bootstrap
   connection: local
   roles:
     - role: virt-install
@@ -59,6 +65,9 @@
 
 - name: Wait for the installation to complete
   hosts: helper
+  tags:
+    - after-bootstrap
+    - wait-complete
   vars:
     kubeconfig: "{{ ocp_base_dir + '/' + ocp_name + '/auth/kubeconfig' }}"
     ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
