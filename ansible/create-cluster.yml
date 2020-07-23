@@ -28,7 +28,7 @@
     ocp_ver_min: "{{ ocp_ver.split('.')[1] }}" 
     patch_etcd: |
       oc --config="{{ kubeconfig }}"
-      oc patch etcd cluster
+      patch etcd cluster
       -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableEtcd": true}}}'
       --type=merge
   tasks:
