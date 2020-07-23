@@ -1,6 +1,6 @@
 ---
 - name: Deprovision cluster nodes
-  hosts: workers
+  hosts: nodes
   connection: local
   roles:
     - virt-remove
