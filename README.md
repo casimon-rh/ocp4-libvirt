@@ -30,7 +30,11 @@ DNS=192.168.100.2
 Domains=ocp4.lab.io
 ```
 
-If you have a single master, you need to adjust the clusterversion operator. Create a YAML file with the following contents:
+If you have a single master, you need to adjust the etc quorum guard. There are two options:
+
+* OCP version 4.3 and before
+
+Edit the clusterversion operator. Create a YAML file with the following contents:
 
 ```shell
 oc patch clusterversion version --type json -p "$(cat <<- EOF
@@ -52,6 +56,13 @@ Downscale etcd-quorum-guard to one:
 oc scale --replicas=1 deployment/etcd-quorum-guard -n openshift-machine-config-operator
 ```
 
+* OCP version 4.4 and after
+
+
+
+
+Downscale other operator's pods if necessary when running single master.
+
 ```shell
 oc scale --replicas=1 deployment.apps/console -n openshift-console
 
@@ -67,4 +78,10 @@ oc scale --replicas=1 deployment.apps/prometheus-adapter -n openshift-monitoring
 oc scale --replicas=1 deployment.apps/thanos-querier -n openshift-monitoring
 oc scale --replicas=1 statefulset.apps/prometheus-k8s -n openshift-monitoring
 oc scale --replicas=1 statefulset.apps/alertmanager-main -n openshift-monitoring
+```
+
+Check pods not Running or Completed
+
+```shell
+oc get pods --no-headers --all-namespaces | egrep -v 'Running|Completed'
 ```
