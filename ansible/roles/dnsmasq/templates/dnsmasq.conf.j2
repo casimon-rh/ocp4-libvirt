@@ -19,7 +19,7 @@ dns-forward-max=300
 {% set ip_last_usable = ip_cidr | next_nth_usable(8) %}
 {% set ip_addr = ip_cidr | ipaddr('address') %}
 domain={{ net_domain }}
-local=/{{ net_domain }}/{{ ip_addr }}
+#local=/{{ net_domain }}/{{ ip_addr }}
 
 # Gateway
 dhcp-option=option:router,{{ ip_gw }}
@@ -30,7 +30,7 @@ dhcp-range={{ ip_first_usable }},{{ ip_last_usable }},12h
 dhcp-option=option:ntp-server,{{ ip_addr }}
 
 #  iPXE server for RHCOS
-address=/matchbox.{{ net_domain }}/{{ ip_addr }}
+host-record=matchbox.{{ net_domain }},{{ ip_addr }}
 
 # TFTP and iPXE
 enable-tftp
