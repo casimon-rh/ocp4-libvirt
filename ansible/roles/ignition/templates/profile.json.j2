@@ -12,7 +12,7 @@
     "console=ttyS0",
     "coreos.inst=yes",
     "coreos.inst.install_dev=vda",
-    "coreos.inst.image_url=http://matchbox.{{ net_domain }}:8080/assets/{{ rhcos_metal }}",
+    "coreos.inst.image_url=http://matchbox.{{ net_domain }}:8080/assets/{{ rhcos_metal.1 }}",
     "coreos.inst.ignition_url=http://matchbox.{{ net_domain }}:8080/ignition?mac=${mac:hexhyp}"
    ]
  }
