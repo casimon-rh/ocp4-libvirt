@@ -3,8 +3,8 @@
  "name": "{{ item }} profile",
  "ignition_id": "{{ item }}.ign",
  "boot": {
-  "kernel": "/assets/{{ rhcos_kernel }}",
-  "initrd": ["/assets/{{ rhcos_initrd }}"],
+  "kernel": "/assets/{{ rhcos_kernel.1 }}",
+  "initrd": ["/assets/{{ rhcos_initrd.1 }}"],
    "args": [
     "ip=dhcp",
     "rd.neednet=1",
