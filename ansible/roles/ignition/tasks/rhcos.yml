@@ -21,21 +21,21 @@
 
 - name: Define name of each RHCOS asset
   set_fact:
-    rhcos_kernel: "{{ rhcos_files.stdout_lines | select('search','kernel') | list | first }}"
-    rhcos_initrd: "{{ rhcos_files.stdout_lines | select('search','initramfs') | list | first }}"
-    rhcos_metal: "{{ rhcos_files.stdout_lines | select('search','metal') | list | first }}"
+    checksum_kernel: "{{ rhcos_files.stdout_lines | select('search','kernel') | list | first }}"
+    checksum_initrd: "{{ rhcos_files.stdout_lines | select('search','initramfs') | list | first }}"
+    checksum_metal: "{{ rhcos_files.stdout_lines | select('search','metal') | list | first }}"
 
-#- name: Split RHCOS asset to have checksum and filename
-#  set_fact:
-#    rhcos_kernel: "{{ checksum_kernel.split() | list }}"
-#    rhcos_initrd: "{{ checksum_initrd.split() | list }}"
-#    rhcos_metal: "{{ checksum_metal.split() | list }}"
-#
+- name: Split RHCOS asset to have checksum and filename
+  set_fact:
+    rhcos_kernel: "{{ checksum_kernel.split() | list }}"
+    rhcos_initrd: "{{ checksum_initrd.split() | list }}"
+    rhcos_metal: "{{ checksum_metal.split() | list }}"
+
 - name: Download RHCOS assets from list of files
   get_url:
-    url: "{{ rhcos_url + '/' + item }}"
-    dest: "{{ matchbox_assets + '/' + item }}"
-    checksum: "{{ 'sha256:' + rhcos_checksum }}"
+    url: "{{ rhcos_url + '/' + item.1 }}"
+    dest: "{{ matchbox_assets + '/' + item.1 }}"
+    checksum: "{{ 'sha256:' + item.0 }}"
     force: no
     owner: matchbox
     group: matchbox
