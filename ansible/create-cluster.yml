@@ -1,5 +1,17 @@
 ---
 # playbook to create openshift cluster
+
+- name: Configure prerequisites on helper
+  hosts: helper
+  gather_facts: yes
+  become: yes
+  roles:
+    - dnsmasq
+    - haproxy
+    - matchbox
+    - ignition
+
+
 - name: Create bootstrap machine
   hosts: bootstrap
   connection: local
@@ -109,3 +121,6 @@
       until: job_result.finished
       retries: 120
       delay: 30
+
+    - debug:
+        var: job_result
