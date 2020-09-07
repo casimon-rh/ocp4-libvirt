@@ -1,0 +1,15 @@
+---
+- name: Approve Pending CSR
+  hosts: helper
+  vars:
+    ocp_cluster_dir: "{{ocp_base_dir}}/{{ocp_name}}"
+    kubeconfig: "{{ ocp_cluster_dir + '/auth/kubeconfig' }}"
+  tasks:
+    - name: Approve first set of CSR
+      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"
+
+    - wait_for:
+        timeout: 15
+
+    - name: Approve second set of CSR
+      shell: "oc --config={{ kubeconfig }} get csr | grep -i pending | cut -f 1 -d ' ' | xargs -n 1 oc --config={{ kubeconfig }} adm certificate approve"

@@ -63,6 +63,9 @@
       retries: 120
       delay: 30 
 
+    - debug:
+        var: job_result
+
 
 - name: Remove bootstrap
   hosts: bootstrap
