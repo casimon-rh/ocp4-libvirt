@@ -1,7 +1,0 @@
----
-- name: Set up libvirt on host
-  hosts: all
-  gather_facts: yes
-  become: yes
-  roles:
-    - libvirt

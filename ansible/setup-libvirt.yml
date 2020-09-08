@@ -1,4 +1,11 @@
 ---
+- name: Set up libvirt on host
+  hosts: helper
+  connection: local
+  become: yes
+  roles:
+    - libvirt
+
 - name: Create a virtual network in KVM
   hosts: helper
   connection: local
@@ -22,4 +29,4 @@
     - virt_net:
         uri: "{{ libvirt_connect }}"
         autostart: yes
-        name: "{{ libvirt_net }}"
+        name: "{{ libvirt_net }}

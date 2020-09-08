@@ -11,7 +11,6 @@
   gather_facts: yes
   connection: local
   roles:
-    - virt-net
     - virt-install
   tasks:
     - debug:
@@ -24,12 +23,8 @@
         delay: 3 
         timeout: 300
 
-- name: Configure helper machine
+- name: Install utilities in helper
   hosts: helper
-  gather_facts: yes
   become: yes
   roles:
     - utilities
-    - dnsmasq
-    - haproxy
-    - matchbox
