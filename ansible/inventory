@@ -6,8 +6,8 @@ all:
       # libvirt_disk_size: 16 
       # libvirt_location: "/home/oalias/Extra/ISOs/CentOS-8.1.1911-x86_64-dvd1.iso"
       # libvirt_graphics: vnc
-      ip_cidr: "192.168.100.2/24"
-      ip_gw: "192.168.100.1"
+      ip_cidr: "172.31.21.156/20"
+      # ip_gw: "192.168.100.1"
   vars:
     rhcos_ver: 4.6.8
     ocp_ver: 4.6.16
