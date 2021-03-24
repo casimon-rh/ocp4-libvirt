@@ -3,49 +3,53 @@ all:
   hosts:
     helper:
       ansible_host: helper
-      libvirt_disk_size: 16 
-      libvirt_location: "/home/oalias/Extra/ISOs/CentOS-8.1.1911-x86_64-dvd1.iso"
-      libvirt_graphics: vnc
+      # libvirt_disk_size: 16 
+      # libvirt_location: "/home/oalias/Extra/ISOs/CentOS-8.1.1911-x86_64-dvd1.iso"
+      # libvirt_graphics: vnc
       ip_cidr: "192.168.100.2/24"
       ip_gw: "192.168.100.1"
   vars:
-    rhcos_ver: 4.2.18
-    ocp_ver: 4.2.32
-    ocp_name: ocp4
-    net_domain: lab.io
-    ocp_domain: ocp4.lab.io
+    rhcos_ver: 4.6.8
+    ocp_ver: 4.6.16
+    ocp_name: app
+    net_domain: svcv.ipa.derfe.ine.mx
+    ocp_domain: svcv.ipa.derfe.ine.mx
     ocp_base_dir: "/opt/openshift"
-    libvirt_connect: "qemu:///system"
-    libvirt_net: openshift
+    # libvirt_connect: "qemu:///system"
+    # libvirt_net: openshift
   children:
     nodes:
       hosts:
-        bootstrap:
-          libvirt_vcpus: 2
-          libvirt_memory: 4160
-          libvirt_disk_size: 40
-          ip_a: "192.168.100.90"
-          ip_mac: '52:54:00:60:29:90'
+        boost:
+          # libvirt_vcpus: 2
+          # libvirt_memory: 4160
+          # libvirt_disk_size: 40
+          ip_a: "172.24.111.241"
+          # ip_mac: '52:54:00:60:29:90'
       children:
         masters:
           hosts:
-            master-0:
-              libvirt_vcpus: 4
-              libvirt_memory: 12352
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.91"
-              ip_mac: '52:54:00:60:30:91'
-        workers:
-          hosts:
-            worker-0:
-              libvirt_vcpus: 2
-              libvirt_memory: 6208
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.92"
-              ip_mac: '52:54:00:60:30:92'
-            worker-1:
-              libvirt_vcpus: 2
-              libvirt_memory: 6208
-              libvirt_disk_size: 40
-              ip_a: "192.168.100.93"
-              ip_mac: '52:54:00:60:30:93'
+            mst00:
+              # libvirt_vcpus: 4
+              # libvirt_memory: 12352
+              # libvirt_disk_size: 40
+              ip_a: "172.24.111.225"
+              # ip_mac: '52:54:00:60:30:91'
+            mst01:
+              ip_a: "172.24.111.226"
+            mst02:
+              ip_a: "172.24.111.227"
+        # workers:
+        #   hosts:
+        #     worker-0:
+        #       libvirt_vcpus: 2
+        #       libvirt_memory: 6208
+        #       libvirt_disk_size: 40
+        #       ip_a: "192.168.100.92"
+        #       ip_mac: '52:54:00:60:30:92'
+        #     worker-1:
+        #       libvirt_vcpus: 2
+        #       libvirt_memory: 6208
+        #       libvirt_disk_size: 40
+        #       ip_a: "192.168.100.93"
+        #       ip_mac: '52:54:00:60:30:93'

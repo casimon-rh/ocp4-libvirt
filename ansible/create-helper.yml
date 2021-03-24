@@ -1,35 +1,34 @@
 ---
-
 - name: Set fact
   hosts: helper
   tasks:
-    - set_fact:
-        ip_domain: "{{ ocp_name + '.' + ocp_domain }}"
+  - set_fact:
+      ip_domain: "{{ ocp_name + '.' + ocp_domain }}"
 
-- name:  Create helper machine
-  hosts: helper
-  gather_facts: yes
-  connection: local
-  roles:
-    - virt-net
-    - virt-install
-  tasks:
-    - debug:
-        msg: "Wait for ssh connectivity"
+# - name: Create helper machine
+#   hosts: helper
+#   gather_facts: yes
+#   connection: local
+#   roles:
+#     - virt-net
+#     - virt-install
+#   tasks:
+#     - debug:
+#         msg: "Wait for ssh connectivity"
 
-    - name: Connection established
-      wait_for:
-        host: "{{ ip_cidr | ipaddr('address')  }}"
-        port: 22
-        delay: 3 
-        timeout: 300
+#     - name: Connection established
+#       wait_for:
+#         host: "{{ ip_cidr | ipaddr('address')  }}"
+#         port: 22
+#         delay: 3
+#         timeout: 300
 
 - name: Configure helper machine
   hosts: helper
   gather_facts: yes
   become: yes
   roles:
-    - utilities
+    # - utilities
     - dnsmasq
     - haproxy
-    - matchbox
+    # - matchbox

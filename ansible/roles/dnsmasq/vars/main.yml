@@ -2,6 +2,6 @@
 #  vars
 packages:
   - dnsmasq
-  - ipxe-bootimgs
+#  - ipxe-bootimgs
 
 networkmanager_config: '/etc/NetworkManager/NetworkManager.conf'

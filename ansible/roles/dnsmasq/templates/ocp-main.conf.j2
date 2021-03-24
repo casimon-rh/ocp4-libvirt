@@ -7,12 +7,12 @@ domain={{ ocp_domain }}
 local=/{{ ocp_domain }}/{{ ip_addr }}
 
 # Gateway
-dhcp-option=option:router,{{ ip_gw  }}
+# dhcp-option=option:router,{{ ip_gw  }}
 
 # DNS options
-dhcp-option=option:dns-server,{{ ip_addr }}
-dhcp-range={{ ip_first_usable }},{{ ip_last_usable }},12h
-dhcp-option=option:ntp-server,{{ ip_addr }}
+# dhcp-option=option:dns-server,{{ ip_addr }}
+# dhcp-range={{ ip_first_usable }},{{ ip_last_usable }},12h
+# dhcp-option=option:ntp-server,{{ ip_addr }}
 
 #  A records for API and APPs
 address=/api.{{ ocp_domain }}/{{ ip_addr }}
@@ -20,24 +20,24 @@ address=/api-int.{{ ocp_domain }}/{{ ip_addr }}
 address=/apps.{{ ocp_domain }}/{{ ip_addr }}
 
 #  iPXE server for RHCOS
-address=/matchbox.{{ ocp_domain }}/{{ ip_addr }}
+# address=/matchbox.{{ ocp_domain }}/{{ ip_addr }}
 
 # TFTP and iPXE
-enable-tftp
-tftp-root=/usr/share/ipxe
+# enable-tftp
+# tftp-root=/usr/share/ipxe
 
 # Legacy PXE
-dhcp-match=set:bios,option:client-arch,0
-dhcp-boot=tag:bios,undionly.kpxe
+# dhcp-match=set:bios,option:client-arch,0
+# dhcp-boot=tag:bios,undionly.kpxe
 
 # UEFI
-dhcp-match=set:efi32,option:client-arch,6
-dhcp-boot=tag:efi32,ipxe-i386.efi
-dhcp-match=set:efibc,option:client-arch,7
-dhcp-boot=tag:efibc,ipxe-x86_64.efi
-dhcp-match=set:efi64,option:client-arch,9
-dhcp-boot=tag:efi64,ipxe-x86_64.efi
+# dhcp-match=set:efi32,option:client-arch,6
+# dhcp-boot=tag:efi32,ipxe-i386.efi
+# dhcp-match=set:efibc,option:client-arch,7
+# dhcp-boot=tag:efibc,ipxe-x86_64.efi
+# dhcp-match=set:efi64,option:client-arch,9
+# dhcp-boot=tag:efi64,ipxe-x86_64.efi
 
 # iPXE - chainload to matchbox ipxe boot script
-dhcp-userclass=set:ipxe,iPXE
-dhcp-boot=tag:ipxe,http://matchbox.{{ ocp_domain }}:8080/boot.ipxe
+# dhcp-userclass=set:ipxe,iPXE
+# dhcp-boot=tag:ipxe,http://matchbox.{{ ocp_domain }}:8080/boot.ipxe
