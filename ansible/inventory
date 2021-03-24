@@ -12,8 +12,8 @@ all:
     rhcos_ver: 4.6.8
     ocp_ver: 4.6.16
     ocp_name: app
-    net_domain: svcv.ipa.derfe.ine.mx
-    ocp_domain: svcv.ipa.derfe.ine.mx
+    net_domain: app.svcv.ipa.derfe.ine.mx
+    ocp_domain: app.svcv.ipa.derfe.ine.mx
     ocp_base_dir: "/opt/openshift"
     # libvirt_connect: "qemu:///system"
     # libvirt_net: openshift
