@@ -39,8 +39,8 @@ all:
               ip_a: "172.24.111.226"
             mst02:
               ip_a: "172.24.111.227"
-        # workers:
-        #   hosts:
+        workers:
+          hosts: {}
         #     worker-0:
         #       libvirt_vcpus: 2
         #       libvirt_memory: 6208
