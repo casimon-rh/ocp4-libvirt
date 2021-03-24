@@ -2,7 +2,7 @@
 all:
   hosts:
     helper:
-      ansible_host: helper
+      ansible_host: localhost
       # libvirt_disk_size: 16 
       # libvirt_location: "/home/oalias/Extra/ISOs/CentOS-8.1.1911-x86_64-dvd1.iso"
       # libvirt_graphics: vnc
@@ -20,7 +20,7 @@ all:
   children:
     nodes:
       hosts:
-        boost:
+        bootstrap:
           # libvirt_vcpus: 2
           # libvirt_memory: 4160
           # libvirt_disk_size: 40
